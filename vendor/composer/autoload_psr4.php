@@ -12,7 +12,7 @@ return array(
     'Symfony\\Component\\HttpFoundation\\' => array($vendorDir . '/symfony/http-foundation'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
     'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
-    'Simplex\\' => array($baseDir . '/src/Simplex'),
+    'Simplex\\' => array($baseDir . '/Simplex'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Calendar\\' => array($baseDir . '/src/Calendar'),
 );

@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Simplex\\": "src/Simplex/",
+            "Simplex\\": "Simplex/",
             "Calendar\\": "src/Calendar/"
         }
     }

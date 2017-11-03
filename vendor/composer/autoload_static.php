@@ -58,7 +58,7 @@ class ComposerStaticInit874b8d8aab251b9d3b3c5b97c9b380b4
         ),
         'Simplex\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src/Simplex',
+            0 => __DIR__ . '/../..' . '/Simplex',
         ),
         'Psr\\Log\\' => 
         array (
