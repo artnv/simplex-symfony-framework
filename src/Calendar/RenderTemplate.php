@@ -18,7 +18,7 @@ class RenderTemplate
         $tpl = sprintf(__DIR__ . '/../Calendar/View/%s.php', $_tpl);
         
         if(!file_exists($tpl)) {
-            throw new \Exception('Template not found!');;
+            throw new \Exception('Template not found!');
         } else {
             include ($tpl);
         }
