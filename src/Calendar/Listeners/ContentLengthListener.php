@@ -3,22 +3,29 @@
 namespace Calendar\Listeners;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Simplex\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class ContentLengthListener implements EventSubscriberInterface
 {
-    public function onResponse(ResponseEvent $event)
+    public function onResponse(FilterResponseEvent $event)
     {
-        $response = $event->getResponse();
-        $headers = $response->headers;
+
+        $response   = $event->getResponse();
+        $headers    = $response->headers;
 
         if (!$headers->has('Content-Length') && !$headers->has('Transfer-Encoding')) {
-            $headers->set('Content-Length', strlen($response->getContent()));
+            $headers->set('X-Listener-Content-Length', strlen($response->getContent()));
         }
+        
+        $response->headers->set('Content-Type', 'text/html');
+        //$response->setTtl(10); //Cache enabled with 10 seconds
+
+        $response->setContent($response->getContent() . ' <br/>[ContentLengthListener]');
+
     }
     
     public static function getSubscribedEvents()
     {
-        return array('response' => array('onResponse', -255));
+        return array('kernel.response' => array('onResponse', 0));
     }
 }

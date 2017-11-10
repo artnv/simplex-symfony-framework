@@ -1,5 +1,5 @@
 <div style="width: 600px;border: 1px dashed black;padding:20px;">
-    <h1>View Page - default</h1>
+    <h1>Page: View/default.php</h1>
     <p>
         <b>Model data: </b><br>
         <div style="border: 1px dashed gray;padding:20px;">

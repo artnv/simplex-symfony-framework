@@ -1,4 +1,6 @@
 <?php
+//ini_set('display_errors', 1);
+//error_reporting(-1);
 
 require "../vendor/autoload.php";
 
@@ -9,36 +11,28 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpKernel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Simplex\Framework;
 
-/* -------------- Events ------------- */
-$dispatcher = new EventDispatcher();
-
-$dispatcher->addSubscriber(new Calendar\Listeners\ContentLengthListener());
-$dispatcher->addSubscriber(new Calendar\Listeners\GoogleListener());
-
-// ---------------
 $request                = Request::createFromGlobals();
 $routes                 = include __DIR__.'/../src/routes.php';
 //$dumper = new Routing\Matcher\Dumper\PhpMatcherDumper($routes);
 //echo $dumper->dump();
 
-$context                = new Routing\RequestContext();
-$matcher                = new Routing\Matcher\UrlMatcher($routes, $context);
-
-$controllerResolver     = new HttpKernel\Controller\ControllerResolver();
-$argumentResolver       = new HttpKernel\Controller\ArgumentResolver();
-
+$context                = new Routing\RequestContext("/simplex-symfony-framework/web");
 $UrlGenerator           = new UrlGenerator($routes, $context);
+
+
+/* -------------- Attributes for Controller/Model/View------------- */
+
 $request->attributes->set('_urlGenerator', $UrlGenerator);
 $request->attributes->set('_urlGenerator_AbsoluteUrl', UrlGeneratorInterface::ABSOLUTE_URL);
 
-$framework  = new Simplex\Framework(
-    $dispatcher,
-    $matcher,
-    $controllerResolver,
-    $argumentResolver
-);
+
+/* -------------- Framework Start ------------- */
+
+$framework  = new Simplex\Framework($routes);
+
 
 $framework  = new HttpKernel\HttpCache\HttpCache(
     $framework,

@@ -3,56 +3,37 @@
 namespace Simplex;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
-use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel;
+use Symfony\Component\Routing;
+use Symfony\Component\HttpFoundation\RequestStack;
 
-class Framework implements HttpKernelInterface
+
+class Framework extends HttpKernel\HttpKernel
 {
-    private $dispatcher;
-    private $matcher;
-    private $controllerResolver;
-    private $argumentResolver;
+    public function __construct($routes)
+    {
+        $context                = new Routing\RequestContext();
+        $matcher                = new Routing\Matcher\UrlMatcher($routes, $context);
+        $requestStack           = new RequestStack();
 
-    public function __construct(
-        EventDispatcher $dispatcher,
-        UrlMatcherInterface $matcher,
-        ControllerResolverInterface $controllerResolver,
-        ArgumentResolverInterface $argumentResolver
-    ) {
-        $this->dispatcher           = $dispatcher;
-        $this->matcher              = $matcher;
-        $this->controllerResolver   = $controllerResolver;
-        $this->argumentResolver     = $argumentResolver;
-    }
- 
-    public function handle(
-        Request $request,
-        $type = HttpKernelInterface::MASTER_REQUEST,
-        $catch = true
-    ) {
+        $controllerResolver     = new HttpKernel\Controller\ControllerResolver();
+        $argumentResolver       = new HttpKernel\Controller\ArgumentResolver();
+
+        $dispatcher             = new EventDispatcher();
         
-        $this->matcher->getContext()->fromRequest($request);
+        /* -------------- Events ------------- */
+
+        $dispatcher->addSubscriber(new HttpKernel\EventListener\RouterListener($matcher, $requestStack));
+        $dispatcher->addSubscriber(new HttpKernel\EventListener\ResponseListener('UTF-8'));
         
-        try {
-            $request->attributes->add($this->matcher->match($request->getPathInfo()));
- 
-            $controller     = $this->controllerResolver->getController($request);
-            $arguments      = $this->argumentResolver->getArguments($request, $controller);
- 
-            $response = call_user_func_array($controller, $arguments);
-        } catch (ResourceNotFoundException $e) {
-            $response = new Response('Not Found', 404);
-        } catch (\Exception $e) {
-            $response = new Response('An error occurred', 500);
-        }
         
-        $this->dispatcher->dispatch('response', new ResponseEvent($response, $request));
+        $dispatcher->addSubscriber(new HttpKernel\EventListener\ExceptionListener('Calendar\Controller\ErrorController::exceptionAction'));
         
-        return $response;
+        $dispatcher->addSubscriber(new \Calendar\Listeners\StringResponseListener());
+        $dispatcher->addSubscriber(new \Calendar\Listeners\ContentLengthListener());
+        $dispatcher->addSubscriber(new \Calendar\Listeners\GoogleListener());
+    
+        /* --------------------------- */
+        parent::__construct($dispatcher, $controllerResolver, $requestStack, $argumentResolver);
     }
 }

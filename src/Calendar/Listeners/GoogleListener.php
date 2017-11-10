@@ -3,27 +3,23 @@
 namespace Calendar\Listeners;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Simplex\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class GoogleListener implements EventSubscriberInterface
 {
-    public function onResponse(ResponseEvent $event)
+    public function onView(GetResponseForControllerResultEvent $event)
     {
-        $response = $event->getResponse();
+        $controllerResult = $event->getControllerResult();
 
-        if ($response->isRedirection()
-            || ($response->headers->has('Content-Type') && false === strpos($response->headers->get('Content-Type'), 'html'))
-            || 'html' !== $event->getRequest()->getRequestFormat()
-        ) {
-            return;
+        if (is_string($controllerResult)) {
+
+            $event->setControllerResult($controllerResult . '<br/>[GoogleListener]: Google Analytics Code');
+
         }
-
-        $response->setContent('HEADER<br/>'.$response->getContent().'<br/>GA CODE');
     }
-    
+
     public static function getSubscribedEvents()
     {
-        return array('response' => 'onResponse');
+        return array('kernel.view' => array('onView', 3));
     }
-
 }
