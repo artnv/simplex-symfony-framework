@@ -4,8 +4,8 @@ namespace Calendar\Controller;
  
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Calendar\RenderTemplate;
-use Calendar\RenderTemplateFromRequest;
+use Calendar\Modules\RenderTemplate\RenderTemplate;
+use Calendar\Modules\RenderTemplate\RenderTemplateFromRequest;
 use Calendar\Model\LeapYear;
 
 class LeapYearController

@@ -4,8 +4,8 @@ namespace Calendar\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Debug\Exception\FlattenException;
-use Calendar\RenderTemplate;
-use Calendar\RenderTemplateFromString;
+use Calendar\Modules\RenderTemplate\RenderTemplate;
+use Calendar\Modules\RenderTemplate\RenderTemplateFromString;
 
 class ErrorController
 {
@@ -21,6 +21,5 @@ class ErrorController
         return $result;
         //return $msg;
         //return new Response($msg, $exception->getStatusCode());
-        //return new Response($result, 404);
     }
 }

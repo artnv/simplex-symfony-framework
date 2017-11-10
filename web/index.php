@@ -6,12 +6,9 @@ require "../vendor/autoload.php";
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpKernel;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Simplex\Framework;
 
 $request                = Request::createFromGlobals();

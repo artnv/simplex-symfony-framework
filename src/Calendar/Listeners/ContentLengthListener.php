@@ -20,8 +20,6 @@ class ContentLengthListener implements EventSubscriberInterface
         $response->headers->set('Content-Type', 'text/html');
         //$response->setTtl(10); //Cache enabled with 10 seconds
 
-        $response->setContent($response->getContent() . ' <br/>[ContentLengthListener]');
-
     }
     
     public static function getSubscribedEvents()
